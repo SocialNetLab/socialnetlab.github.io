@@ -1,0 +1,1136 @@
+<html lang="zh-CN"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataspeaks工作室 - 数据可视化与创意设计</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- AOS - Animate On Scroll -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0A2463',
+                        secondary: '#3E92CC',
+                        accent: '#D8315B',
+                        light: '#FFFAFF',
+                        dark: '#1E1B18',
+                        gray: '#8F8985'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    height: {
+                        'screen-90': '90vh',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            .hover-scale {
+                transition: transform 0.3s ease;
+            }
+            .hover-scale:hover {
+                transform: scale(1.03);
+            }
+            .glass-effect {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .nav-active {
+                border-left: 4px solid theme('colors.secondary');
+                background-color: rgba(62, 146, 204, 0.1);
+            }
+        }
+    </style>
+    <style>
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3E92CC;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0A2463;
+        }
+        
+        /* 图片懒加载淡入效果 */
+        .lazy-image {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .lazy-image.loaded {
+            opacity: 1;
+        }
+        
+        /* 移动端菜单动画 */
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        
+        /* 卡片悬停效果 */
+        .portfolio-card {
+            transition: all 0.3s ease;
+        }
+        .portfolio-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 团队成员卡片翻转效果 */
+        .team-card {
+            perspective: 1000px;
+        }
+        .team-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .team-card:hover .team-card-inner {
+            transform: rotateY(180deg);
+        }
+        .team-card-front, .team-card-back {
+            backface-visibility: hidden;
+        }
+        .team-card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-light text-dark overflow-x-hidden">
+    <!-- 移动端菜单按钮 -->
+    <button id="menu-toggle" class="fixed top-4 left-4 z-50 lg:hidden bg-primary text-white p-2 rounded-md shadow-lg">
+        <i class="fa fa-bars"></i>
+    </button>
+
+    <!-- 左侧导航栏 -->
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-primary text-light transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40">
+        <!-- Logo -->
+        <div class="p-6 flex flex-col items-center border-b border-secondary">
+            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/cfba65a4ff2541a2bcffa25d76bf916e~tplv-a9rns2rl98-image.image?rcl=20251113202216B2F056FB3BACDD7CDC0C&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1763641336&amp;x-signature=CvQYMT8fEAMOqmKF0p4Y90F6m%2B8%3D" alt="Dataspeaks工作室" class="w-32 h-32 mb-4">
+            <h1 class="text-2xl font-bold">Dataspeaks</h1>
+            <p class="text-secondary text-sm">数据新闻工作室</p>
+        </div>
+        
+        <!-- 导航菜单 -->
+        <nav class="mt-6">
+            <ul>
+                <li>
+                    <a href="#home" class="nav-link flex items-center px-6 py-4 hover:bg-secondary transition-colors duration-200 nav-active">
+                        <i class="fa fa-home w-6"></i>
+                        <span>首页</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#infographics" class="nav-link flex items-center px-6 py-4 hover:bg-secondary transition-colors duration-200">
+                        <i class="fa fa-bar-chart w-6"></i>
+                        <span>信息图</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#music-mv" class="nav-link flex items-center px-6 py-4 hover:bg-secondary transition-colors duration-200">
+                        <i class="fa fa-music w-6"></i>
+                        <span>音乐MV</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#videos" class="nav-link flex items-center px-6 py-4 hover:bg-secondary transition-colors duration-200">
+                        <i class="fa fa-video-camera w-6"></i>
+                        <span>视频</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#websites" class="nav-link flex items-center px-6 py-4 hover:bg-secondary transition-colors duration-200">
+                        <i class="fa fa-globe w-6"></i>
+                        <span>网页</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#team" class="nav-link flex items-center px-6 py-4 hover:bg-secondary transition-colors duration-200">
+                        <i class="fa fa-users w-6"></i>
+                        <span>团队介绍</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- 联系信息 -->
+        <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-secondary">
+            <div class="flex justify-center space-x-4 mb-4">
+                <a href="#" class="text-light hover:text-secondary transition-colors duration-200">
+                    <i class="fa fa-weixin fa-lg"></i>
+                </a>
+                <a href="#" class="text-light hover:text-secondary transition-colors duration-200">
+                    <i class="fa fa-weibo fa-lg"></i>
+                </a>
+                <a href="#" class="text-light hover:text-secondary transition-colors duration-200">
+                    <i class="fa fa-behance fa-lg"></i>
+                </a>
+                <a href="#" class="text-light hover:text-secondary transition-colors duration-200">
+                    <i class="fa fa-dribbble fa-lg"></i>
+                </a>
+            </div>
+            <p class="text-center text-sm text-gray">© 2025 Dataspeaks工作室</p>
+        </div>
+    </aside>
+
+    <!-- 右侧内容区 -->
+    <main class="lg:ml-64 min-h-screen">
+        <!-- 首页/英雄区 -->
+        <section id="home" class="relative h-screen-90 bg-gradient-to-br from-primary to-secondary flex items-center justify-center overflow-hidden">
+            <!-- 背景装饰 -->
+            <div class="absolute inset-0 z-0">
+                <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-accent rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+                <div class="absolute top-3/4 right-1/4 w-64 h-64 bg-light rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+                <div class="absolute bottom-1/4 left-3/4 w-64 h-64 bg-secondary rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+            </div>
+            
+            <!-- 内容 -->
+            <div class="container mx-auto px-6 z-10 text-center" data-aos="fade-up" data-aos-duration="1000">
+                <h1 class="text-4xl md:text-6xl font-bold text-light mb-6 text-shadow">
+                    数据可视化<br><span class="text-accent">创意表达</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-light mb-8 max-w-2xl mx-auto">
+                    Dataspeaks工作室致力于以AI为笔，以数据为墨，打造有速度、有力度、有温度的数据新闻！
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#infographics" class="bg-accent hover:bg-opacity-90 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
+                        查看作品集
+                    </a>
+                    <a href="#contact" class="bg-transparent border-2 border-light text-light hover:bg-light hover:text-primary font-bold py-3 px-8 rounded-full transition-all duration-300">
+                        联系我们
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 向下滚动指示 -->
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+                <a href="#infographics" class="text-light">
+                    <i class="fa fa-chevron-down fa-2x"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- 信息图作品区 -->
+        <section id="infographics" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-primary mb-2" data-aos="fade-right">信息图</h2>
+                <p class="text-gray mb-12 max-w-2xl" data-aos="fade-right" data-aos-delay="100">
+                    我们将复杂数据转化为清晰、美观的信息图表，帮助观众快速理解和记忆关键信息。
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 信息图作品1 -->
+                    <div class="portfolio-card bg-white rounded-lg overflow-hidden shadow-md" data-aos="fade-up">
+                        <div class="relative overflow-hidden">
+                            <img src="https://p26-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/900051233482473562~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587887&amp;x-signature=15IpXwYG0XH1xu9H9EkqMcpKhRg%3D" alt="数据可视化大屏" class="w-full h-64 object-cover lazy-image">
+                            <div class="absolute inset-0 bg-primary bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <button class="view-details bg-white text-primary px-4 py-2 rounded-full font-medium" data-id="infographic1">
+                                    查看详情
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-primary mb-2">方寸匠心</h3>
+                            <p class="text-gray mb-4">古代食盒的物理智慧与东方美学</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">物理智慧</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">色彩美学</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">考究用料</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 信息图作品2 -->
+                    <div class="portfolio-card bg-white rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="100">
+                        <div class="relative overflow-hidden">
+                            <img src="https://p26-doubao-search-sign.byteimg.com/labis/529ec3f2a020750f243dc22d5d18af6e~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587887&amp;x-signature=5CdDDGj%2F7LCy19NphIoZp5ileYM%3D" alt="大数据可视化" class="w-full h-64 object-cover lazy-image">
+                            <div class="absolute inset-0 bg-primary bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <button class="view-details bg-white text-primary px-4 py-2 rounded-full font-medium" data-id="infographic2">
+                                    查看详情
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-primary mb-2">大唐万国</h3>
+                            <p class="text-gray mb-4">大唐盛世各国来朝背后的故事。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">商贸经通</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">广纳贤才</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">文化荟萃</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 信息图作品3 -->
+                    <div class="portfolio-card bg-white rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="200">
+                        <div class="relative overflow-hidden">
+                            <img src="https://p26-doubao-search-sign.byteimg.com/labis/b21b296a53de6deb3b666ba7d4911e05~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587887&amp;x-signature=aZCuMVBEUtDomiSkKC0RhjgXaps%3D" alt="社交媒体数据分析" class="w-full h-64 object-cover lazy-image">
+                            <div class="absolute inset-0 bg-primary bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <button class="view-details bg-white text-primary px-4 py-2 rounded-full font-medium" data-id="infographic3">
+                                    查看详情
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-primary mb-2">骑行文化</h3>
+                            <p class="text-gray mb-4">骑行爱好者眼中的骑行文化。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">自行车发展</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">骑行配件</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">骑行车道</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <!-- 查看更多按钮 -->
+                <div class="text-center mt-12">
+                    <button class="load-more bg-white border border-primary text-primary hover:bg-primary hover:text-white font-bold py-3 px-8 rounded-full transition-all duration-300" data-category="infographics">
+                        查看更多
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 音乐MV作品区 -->
+        <section id="music-mv" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-primary mb-2" data-aos="fade-right">音乐MV</h2>
+                <p class="text-gray mb-12 max-w-2xl" data-aos="fade-right" data-aos-delay="100">
+                    我们创作视觉冲击力强、创意独特的AI MV，帮助作品更具感染力。
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 音乐MV作品1 -->
+                    <div class="portfolio-card bg-white rounded-lg overflow-hidden shadow-md" data-aos="fade-up">
+                        <div class="relative overflow-hidden">
+                            <img src="https://p26-doubao-search-sign.byteimg.com/labis/1911aee96771dd346d00ecc265feb2b0~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587887&amp;x-signature=BsPgL3g3bJv7GollPR1RSo%2Bdw90%3D" alt="音乐MV封面" class="w-full h-64 object-cover lazy-image">
+                            <div class="absolute inset-0 bg-primary bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <button class="view-details bg-white text-primary px-4 py-2 rounded-full font-medium" data-id="mv1">
+                                    查看详情
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-primary mb-2">月久弥今</h3>
+                            <p class="text-gray mb-4">中国古代的五对爱情佳话，书写当代年轻人心目中的爱情观。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">音乐</span>
+                                <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">爱情</span>
+                                <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">艺术</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 音乐MV作品2 -->
+                    <div class="portfolio-card bg-white rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="100">
+                        <div class="relative overflow-hidden">
+                            <img src="https://p26-doubao-search-sign.byteimg.com/labis/e05c53595e5a498990b00ba0efbac277~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587887&amp;x-signature=k6oEXdAw28j1IOiv7ykCS1A8Iz8%3D" alt="音乐专辑封面" class="w-full h-64 object-cover lazy-image">
+                            <div class="absolute inset-0 bg-primary bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <button class="view-details bg-white text-primary px-4 py-2 rounded-full font-medium" data-id="mv2">
+                                    查看详情
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-primary mb-2">声声易安</h3>
+                            <p class="text-gray mb-4">三首流行乐串起李清照的一生。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">如梦令</span>
+                                <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">醉花阴</span>
+                                <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">声声慢</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 音乐MV作品3 -->
+                    <div class="portfolio-card bg-white rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="200">
+                        <div class="relative overflow-hidden">
+                            <img src="https://p26-doubao-search-sign.byteimg.com/labis/a05d99ded5e5924e187c18c029db085e~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587887&amp;x-signature=K6oQiGTlhaKLS4MsNiZ560vWFjk%3D" alt="音乐宣传海报" class="w-full h-64 object-cover lazy-image">
+                            <div class="absolute inset-0 bg-primary bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <button class="view-details bg-white text-primary px-4 py-2 rounded-full font-medium" data-id="mv3">
+                                    查看详情
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-primary mb-2">更多</h3>
+                            <p class="text-gray mb-4">结合音乐元素和生日主题的宣传海报设计，色彩鲜明，富有活力。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">明星宣传</span>
+                                <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">生日主题</span>
+                                <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">活力风格</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 查看更多按钮 -->
+                <div class="text-center mt-12">
+                    <button class="load-more bg-white border border-primary text-primary hover:bg-primary hover:text-white font-bold py-3 px-8 rounded-full transition-all duration-300" data-category="music-mv">
+                        查看更多
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 视频作品区 -->
+        <section id="videos" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-primary mb-2" data-aos="fade-right">视频</h2>
+                <p class="text-gray mb-12 max-w-2xl" data-aos="fade-right" data-aos-delay="100">
+                    我们为各类视频内容设计引人注目的缩略图和视觉元素，提高点击率和观众参与度。
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 视频作品1 -->
+                    <div class="portfolio-card bg-white rounded-lg overflow-hidden shadow-md" data-aos="fade-up">
+                        <div class="relative overflow-hidden">
+                            <img src="https://p3-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/1714837410331754497~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587887&amp;x-signature=Bv6H5sTRV8NgzyVqHAwIR25fQ4k%3D" alt="白化病宣传视频" class="w-full h-64 object-cover lazy-image">
+                            <div class="absolute inset-0 bg-primary bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <button class="view-details bg-white text-primary px-4 py-2 rounded-full font-medium" data-id="video1">
+                                    查看详情
+                                </button>
+                            </div>
+                            <div class="absolute top-4 right-4 bg-red-600 text-white text-xs px-2 py-1 rounded">
+                                公益宣传
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-primary mb-2">姜太公湛江钓虾记</h3>
+                            <p class="text-gray mb-4">姜太公湛江钓虾记。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">公益</span>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">湛江</span>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">百千万工程</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 视频作品2 -->
+                    <div class="portfolio-card bg-white rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="100">
+                        <div class="relative overflow-hidden">
+                            <img src="https://p3-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/1849097967781412876~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587887&amp;x-signature=LWeQU3oMzKBOk8VZVNechLcuatY%3D" alt="美妆技巧视频" class="w-full h-64 object-cover lazy-image">
+                            <div class="absolute inset-0 bg-primary bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <button class="view-details bg-white text-primary px-4 py-2 rounded-full font-medium" data-id="video2">
+                                    查看详情
+                                </button>
+                            </div>
+                            <div class="absolute top-4 right-4 bg-pink-600 text-white text-xs px-2 py-1 rounded">
+                                上古神话
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-primary mb-2">山海经传</h3>
+                            <p class="text-gray mb-4">想象源自未抵达。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">陆吾</span>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">英招</span>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">孟极</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 视频作品3 -->
+                    <div class="portfolio-card bg-white rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="200">
+                        <div class="relative overflow-hidden">
+                            <img src="https://p3-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/1723711603100745728~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587887&amp;x-signature=1G1WdxgoSnWHf0QLsWg7Puprm5A%3D" alt="美食技巧视频" class="w-full h-64 object-cover lazy-image">
+                            <div class="absolute inset-0 bg-primary bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <button class="view-details bg-white text-primary px-4 py-2 rounded-full font-medium" data-id="video3">
+                                    查看详情
+                                </button>
+                            </div>
+                            <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs px-2 py-1 rounded">
+                                竞技体育
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-primary mb-2">十五运</h3>
+                            <p class="text-gray mb-4">激情全运会，活力大湾区。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">大学生</span>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">全云会</span>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">大湾区</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 查看更多按钮 -->
+                <div class="text-center mt-12">
+                    <button class="load-more bg-white border border-primary text-primary hover:bg-primary hover:text-white font-bold py-3 px-8 rounded-full transition-all duration-300" data-category="videos">
+                        查看更多
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 网页作品区 -->
+        <section id="websites" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-primary mb-2" data-aos="fade-right">网页</h2>
+                <p class="text-gray mb-12 max-w-2xl" data-aos="fade-right" data-aos-delay="100">
+                    我们设计和开发美观、实用、用户友好的网站，帮助企业和个人建立专业的在线形象。
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 网页作品1 -->
+                    <div class="portfolio-card bg-white rounded-lg overflow-hidden shadow-md" data-aos="fade-up">
+                        <div class="relative overflow-hidden">
+                            <img src="https://p26-doubao-search-sign.byteimg.com/labis/e7503f7546aafe74038643d12615dad7~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587887&amp;x-signature=SA%2F1ljPKmgXesF4v5fRygLRv94I%3D" alt="非营利组织网站" class="w-full h-64 object-cover lazy-image">
+                            <div class="absolute inset-0 bg-primary bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <button class="view-details bg-white text-primary px-4 py-2 rounded-full font-medium" data-id="website1">
+                                    查看详情
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-primary mb-2">网络失眠</h3>
+                            <p class="text-gray mb-4">2795个帖子背后，网络失眠小组里“夜旅人”的挣扎。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">非营利</span>
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">响应式</span>
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">公益</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 网页作品2 -->
+                    <div class="portfolio-card bg-white rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="100">
+                        <div class="relative overflow-hidden">
+                            <img src="https://p26-doubao-search-sign.byteimg.com/labis/9f0b2a63c08d7be7c42d5acd8868ebc4~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587887&amp;x-signature=%2FDivFY0nW4JCDddegIUPIlTFqK4%3D" alt="旅游网站" class="w-full h-64 object-cover lazy-image">
+                            <div class="absolute inset-0 bg-primary bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <button class="view-details bg-white text-primary px-4 py-2 rounded-full font-medium" data-id="website2">
+                                    查看详情
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-primary mb-2">爱无障碍</h3>
+                            <p class="text-gray mb-4">爱·无障碍：数说残疾人福利事业。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">旅游</span>
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">移动端</span>
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">预订系统</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 网页作品3 -->
+                    <div class="portfolio-card bg-white rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="200">
+                        <div class="relative overflow-hidden">
+                            <img src="https://p26-doubao-search-sign.byteimg.com/labis/6ca07d13297f5aa0a5f1b16a4ab465f7~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587887&amp;x-signature=2%2BmNTvbmgLkdk7DB0zFNxZp69DE%3D" alt="内容管理系统" class="w-full h-64 object-cover lazy-image">
+                            <div class="absolute inset-0 bg-primary bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <button class="view-details bg-white text-primary px-4 py-2 rounded-full font-medium" data-id="website3">
+                                    查看详情
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-primary mb-2">唐诗图谱</h3>
+                            <p class="text-gray mb-4">五万首唐诗背后的数据故事。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">全唐诗</span>
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">社交网络</span>
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">可视化</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 查看更多按钮 -->
+                <div class="text-center mt-12">
+                    <button class="load-more bg-white border border-primary text-primary hover:bg-primary hover:text-white font-bold py-3 px-8 rounded-full transition-all duration-300" data-category="websites">
+                        查看更多
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 团队介绍区 -->
+        <section id="team" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-primary mb-2" data-aos="fade-right">团队介绍</h2>
+                <p class="text-gray mb-12 max-w-2xl" data-aos="fade-right" data-aos-delay="100">
+                    我们是一支充满激情和创造力的专业工作室，致力于高质量的数据可视化和AI新媒体作品创作。
+                </p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- 团队成员1 -->
+                    <div class="team-card" data-aos="fade-up">
+                        <div class="team-card-inner w-full h-80">
+                            <div class="team-card-front absolute w-full h-full bg-white rounded-lg overflow-hidden shadow-md">
+                                <img src="https://p26-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/1788226985473867789~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587929&amp;x-signature=CxegxxZs1Fi79D20GfZNajX%2B41g%3D" alt="张明 - 创意总监" class="w-full h-64 object-cover">
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold text-primary mb-2">赵甜芳</h3>
+                                    <p class="text-secondary leading-relaxed">创始人</p>
+                                </div>
+                            </div>
+                            <div class="team-card-back absolute w-full h-full bg-primary text-light rounded-lg p-6 flex flex-col justify-center">
+                                <h3 class="text-xl font-bold mb-2">赵甜芳</h3>
+                                <p class="text-secondary mb-4">创始人</p>
+                                <p class="mb-4">Dataspeaks工作室发起人及创始人，专注于数据新闻与和AI新媒体创作，致力于推动新文科智慧教育和产学研协同育人。</p>
+                                <div class="flex space-x-3">
+                                    <a href="#" class="text-light hover:text-secondary">
+                                        <i class="fa fa-linkedin"></i>
+                                    </a>
+                                    <a href="#" class="text-light hover:text-secondary">
+                                        <i class="fa fa-twitter"></i>
+                                    </a>
+                                    <a href="#" class="text-light hover:text-secondary">
+                                        <i class="fa fa-behance"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 团队成员2 -->
+                    <div class="team-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="team-card-inner w-full h-80">
+                            <div class="team-card-front absolute w-full h-full bg-white rounded-lg overflow-hidden shadow-md">
+                                <img src="https://p26-doubao-search-sign.byteimg.com/labis/c857cb8114d382ce5143c6c6974641d7~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587929&amp;x-signature=6xKXQmN4X3oje0OHjhL0As2OL2I%3D" alt="李婷 - 技术主管" class="w-full h-64 object-cover">
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold text-primary mb-2">朱少乾</h3>
+                                    <p class="text-secondary leading-relaxed">技术主管</p>
+                                </div>
+                            </div>
+                            <div class="team-card-back absolute w-full h-full bg-primary text-light rounded-lg p-6 flex flex-col justify-center">
+                                <h3 class="text-xl font-bold mb-2">朱少乾</h3>
+                                <p class="text-secondary mb-4">联合创始人</p>
+                                <p class="mb-4">技术总负责人，深耕AI编程与开发领域，带领团队攻克技术难关，确保项目高质量交付。</p>
+                                <div class="flex space-x-3">
+                                    <a href="#" class="text-light hover:text-secondary">
+                                        <i class="fa fa-linkedin"></i>
+                                    </a>
+                                    <a href="#" class="text-light hover:text-secondary">
+                                        <i class="fa fa-github"></i>
+                                    </a>
+                                    <a href="#" class="text-light hover:text-secondary">
+                                        <i class="fa fa-codepen"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 团队成员3 -->
+                    <div class="team-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="team-card-inner w-full h-80">
+                            <div class="team-card-front absolute w-full h-full bg-white rounded-lg overflow-hidden shadow-md">
+                                <img src="https://p26-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/1070779997535993867~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587929&amp;x-signature=A2bIsNtgbiNoI5KhsH3VsP2AsK4%3D" alt="王强 - 设计师" class="w-full h-64 object-cover">
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold text-primary mb-2">曾晓莹</h3>
+                                    <p class="text-secondary leading-relaxed">联合创始人</p>
+                                </div>
+                            </div>
+                            <div class="team-card-back absolute w-full h-full bg-primary text-light rounded-lg p-6 flex flex-col justify-center">
+                                <h3 class="text-xl font-bold mb-2">曾晓莹</h3>
+                                <p class="text-secondary mb-4">联合创始人</p>
+                                <p class="mb-4">首届社团主席，搭建完整团队架构，展现出卓越的领导力和多面手能力。</p>
+                                <div class="flex space-x-3">
+                                    <a href="#" class="text-light hover:text-secondary">
+                                        <i class="fa fa-linkedin"></i>
+                                    </a>
+                                    <a href="#" class="text-light hover:text-secondary">
+                                        <i class="fa fa-dribbble"></i>
+                                    </a>
+                                    <a href="#" class="text-light hover:text-secondary">
+                                        <i class="fa fa-instagram"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 团队成员4 -->
+                    <div class="team-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="team-card-inner w-full h-80">
+                            <div class="team-card-front absolute w-full h-full bg-white rounded-lg overflow-hidden shadow-md">
+                                <img src="https://p26-doubao-search-sign.byteimg.com/labis/f7ca64670a11a6f4601b623a71e98378~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&amp;x-expires=1778587929&amp;x-signature=jkeYBQ31ErPY4Ar8czLEEvLSdT0%3D" alt="陈静 - 数据分析师" class="w-full h-64 object-cover">
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold text-primary mb-2">陈静</h3>
+                                    <p class="text-secondary leading-relaxed">数据分析师</p>
+                                </div>
+                            </div>
+                            <div class="team-card-back absolute w-full h-full bg-primary text-light rounded-lg p-6 flex flex-col justify-center">
+                                <h3 class="text-xl font-bold mb-2">陈静</h3>
+                                <p class="text-secondary mb-4">数据分析师</p>
+                                <p class="mb-4">数据分析师，擅长数据处理、分析和挖掘，能够从复杂数据中提取有价值的信息，为可视化项目提供数据支持。</p>
+                                <div class="flex space-x-3">
+                                    <a href="#" class="text-light hover:text-secondary">
+                                        <i class="fa fa-linkedin"></i>
+                                    </a>
+                                    <a href="#" class="text-light hover:text-secondary">
+                                        <i class="fa fa-github"></i>
+                                    </a>
+                                    <a href="#" class="text-light hover:text-secondary">
+                                        <i class="fa fa-medium"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系我们区 -->
+        <section id="contact" class="py-20 bg-gradient-to-br from-primary to-secondary text-light">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold mb-2" data-aos="fade-right">联系我们</h2>
+                <p class="mb-12 max-w-2xl" data-aos="fade-right" data-aos-delay="100">
+                    无论您有任何问题或项目需求，都欢迎与我们联系，我们将竭诚为您提供专业的解决方案。
+                </p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- 联系表单 -->
+                    <div class="bg-white rounded-lg shadow-lg p-8 text-dark" data-aos="fade-up">
+                        <h3 class="text-2xl font-bold text-primary mb-6">发送消息</h3>
+                        <form id="contact-form">
+                            <div class="mb-4">
+                                <label for="subject" class="block text-gray-700 mb-2">主题</label>
+                                <input type="text" id="subject" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary">
+                            </div>
+                            <div class="mb-6">
+                                <label for="message" class="block text-gray-700 mb-2">消息</label>
+                                <textarea id="message" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label for="email" class="block text-gray-700 mb-2">联系方式</label>
+                                <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary">
+                            </div>
+                            <button type="submit" class="bg-primary hover:bg-opacity-90 text-white font-bold py-3 px-8 rounded-md transition-all duration-300 w-full">
+                                发送消息
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- 联系信息 -->
+                    <div data-aos="fade-up" data-aos-delay="100">
+                        <h3 class="text-2xl font-bold mb-6">联系方式</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="bg-white bg-opacity-20 p-3 rounded-full mr-4">
+                                    <i class="fa fa-map-marker fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-1">地址</h4>
+                                    <p>广东省广州市番禺区暨南大学番禺校区</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="bg-white bg-opacity-20 p-3 rounded-full mr-4">
+                                    <i class="fa fa-phone fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-1">邮箱</h4>
+                                    <p>jnu_practice@qq.com</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="bg-white bg-opacity-20 p-3 rounded-full mr-4">
+                                    <i class="fa fa-envelope fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-1">网址</h4>
+                                    <p>dataspeaks.net</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 社交媒体 -->
+                        <div class="mt-12">
+                            <h3 class="text-2xl font-bold mb-6">关注我们</h3>
+                            <div class="flex space-x-4">
+                                <a href="#" class="bg-white bg-opacity-20 hover:bg-opacity-30 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300">
+                                    <i class="fa fa-weixin fa-lg"></i>
+                                </a>
+                                <a href="#" class="bg-white bg-opacity-20 hover:bg-opacity-30 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300">
+                                    <i class="fa fa-weibo fa-lg"></i>
+                                </a>
+                                <a href="#" class="bg-white bg-opacity-20 hover:bg-opacity-30 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300">
+                                    <i class="fa fa-behance fa-lg"></i>
+                                </a>
+                                <a href="#" class="bg-white bg-opacity-20 hover:bg-opacity-30 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300">
+                                    <i class="fa fa-dribbble fa-lg"></i>
+                                </a>
+                                <a href="#" class="bg-white bg-opacity-20 hover:bg-opacity-30 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300">
+                                    <i class="fa fa-linkedin fa-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="bg-dark text-light py-12">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <!-- Logo和简介 -->
+                    <div class="md:col-span-1">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/e5c29f5bec424c1aa893b3ecc3d42d89~tplv-a9rns2rl98-image.image?rcl=2025111320110690D21A4FCF909597B8A5&amp;rk3s=8e244e95&amp;rrcfp=f06b921b&amp;x-expires=1765627881&amp;x-signature=CnbACY7wGcH4RMByFFXdd8VRegk%3D" alt="Dataspeaks工作室" class="w-24 h-24 mb-4">
+                        <p class="text-gray">
+                            Dataspeaks工作室致力于将复杂数据转化为直观、美观的可视化作品，帮助媒体机构更好地讲述数据故事。
+                        </p>
+                    </div>
+                    
+                    <!-- 快速链接 -->
+                    <div>
+                        <h4 class="text-xl font-bold mb-4">快速链接</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#home" class="text-gray hover:text-secondary transition-colors duration-200">首页</a></li>
+                            <li><a href="#infographics" class="text-gray hover:text-secondary transition-colors duration-200">信息图</a></li>
+                            <li><a href="#music-mv" class="text-gray hover:text-secondary transition-colors duration-200">音乐MV</a></li>
+                            <li><a href="#videos" class="text-gray hover:text-secondary transition-colors duration-200">视频</a></li>
+                            <li><a href="#websites" class="text-gray hover:text-secondary transition-colors duration-200">网页</a></li>
+                            <li><a href="#team" class="text-gray hover:text-secondary transition-colors duration-200">团队介绍</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 服务 -->
+                    <div>
+                        <h4 class="text-xl font-bold mb-4">服务</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray hover:text-secondary transition-colors duration-200">数据可视化</a></li>
+                            <li><a href="#" class="text-gray hover:text-secondary transition-colors duration-200">UI/UX设计</a></li>
+                            <li><a href="#" class="text-gray hover:text-secondary transition-colors duration-200">网站开发</a></li>
+                            <li><a href="#" class="text-gray hover:text-secondary transition-colors duration-200">品牌设计</a></li>
+                            <li><a href="#" class="text-gray hover:text-secondary transition-colors duration-200">视频制作</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 订阅 -->
+                    <div>
+                        <h4 class="text-xl font-bold mb-4">订阅我们</h4>
+                        <p class="text-gray mb-4">订阅我们的通讯，获取最新的项目和活动信息。</p>
+                        <form class="flex">
+                            <input type="email" placeholder="您的邮箱地址" class="px-4 py-2 w-full rounded-l-md focus:outline-none text-dark">
+                            <button type="submit" class="bg-secondary hover:bg-opacity-90 px-4 py-2 rounded-r-md transition-colors duration-200">
+                                <i class="fa fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray text-sm mb-4 md:mb-0">© 2025 Dataspeaks工作室. 保留所有权利.</p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray hover:text-secondary transition-colors duration-200 text-sm">隐私政策</a>
+                        <a href="#" class="text-gray hover:text-secondary transition-colors duration-200 text-sm">服务条款</a>
+                        <a href="#" class="text-gray hover:text-secondary transition-colors duration-200 text-sm">Cookie政策</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- 作品详情模态框 -->
+    <div id="portfolio-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 id="modal-title" class="text-2xl font-bold text-primary"></h3>
+                    <button id="close-modal" class="text-gray hover:text-primary">
+                        <i class="fa fa-times fa-lg"></i>
+                    </button>
+                </div>
+                <div id="modal-content">
+                    <!-- 内容将通过JavaScript动态填充 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // 初始化AOS动画库
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+            
+            // 移动端菜单切换
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+            
+            // 导航链接点击事件
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    // 移除所有链接的活动状态
+                    navLinks.forEach(item => item.classList.remove('nav-active'));
+                    
+                    // 添加当前链接的活动状态
+                    this.classList.add('nav-active');
+                    
+                    // 在移动端点击导航链接后关闭菜单
+                    if (window.innerWidth < 1024) {
+                        sidebar.classList.add('-translate-x-full');
+                    }
+                });
+            });
+            
+            // 图片懒加载
+            const lazyImages = document.querySelectorAll('.lazy-image');
+            
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.classList.add('loaded');
+                            imageObserver.unobserve(img);
+                        }
+                    });
+                });
+                
+                lazyImages.forEach(img => {
+                    imageObserver.observe(img);
+                });
+            } else {
+                // 回退方案，适用于不支持IntersectionObserver的浏览器
+                lazyImages.forEach(img => {
+                    img.classList.add('loaded');
+                });
+            }
+            
+            // 作品详情模态框
+            const portfolioModal = document.getElementById('portfolio-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+            const closeModal = document.getElementById('close-modal');
+            const viewDetailsButtons = document.querySelectorAll('.view-details');
+            
+            // 作品详情数据
+            const portfolioDetails = {
+                infographic1: {
+                    title: "数据可视化监控大屏",
+                    content: `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <img src="https://p26-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/900051233482473562~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778587887&x-signature=15IpXwYG0XH1xu9H9EkqMcpKhRg%3D" alt="数据可视化大屏" class="w-full rounded-lg">
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-primary mb-4">项目概述</h4>
+                                <p class="mb-4">为某大型互联网企业设计开发的实时数据监控大屏，用于展示公司核心业务指标、系统运行状态和用户行为数据。</p>
+                                
+                                <h4 class="text-xl font-bold text-primary mb-4">技术栈</h4>
+                                <ul class="list-disc pl-5 mb-4">
+                                    <li>HTML5 / CSS3 / JavaScript</li>
+                                    <li>Chart.js / ECharts</li>
+                                    <li>WebSocket实时数据更新</li>
+                                    <li>响应式设计</li>
+                                </ul>
+                                
+                                <h4 class="text-xl font-bold text-primary mb-4">项目成果</h4>
+                                <p>该数据大屏已成功应用于客户的运营监控中心，帮助决策者实时掌握业务动态，提高运营效率和决策速度。</p>
+                                
+                                <div class="mt-6 flex flex-wrap gap-2">
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">数据大屏</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">实时监控</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">业务分析</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">数据可视化</span>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                infographic2: {
+                    title: "大数据抽象可视化",
+                    content: `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <img src="https://p26-doubao-search-sign.byteimg.com/labis/529ec3f2a020750f243dc22d5d18af6e~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1778587887&x-signature=5CdDDGj%2F7LCy19NphIoZp5ileYM%3D" alt="大数据可视化" class="w-full rounded-lg">
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-primary mb-4">项目概述</h4>
+                                <p class="mb-4">为科技展览设计的大数据抽象可视化装置，通过动态图形和色彩变化展示复杂数据集之间的关系和模式。</p>
+                                
+                                <h4 class="text-xl font-bold text-primary mb-4">设计理念</h4>
+                                <p class="mb-4">本项目采用抽象艺术手法，将枯燥的数据转化为生动的视觉体验。通过点、线、面的组合和色彩的变化，展现数据的流动和关联，让观众直观感受大数据的魅力。</p>
+                                
+                                <h4 class="text-xl font-bold text-primary mb-4">技术实现</h4>
+                                <ul class="list-disc pl-5 mb-4">
+                                    <li>Processing / p5.js</li>
+                                    <li>WebGL 3D渲染</li>
+                                    <li>实时数据驱动</li>
+                                    <li>交互式体验</li>
+                                </ul>
+                                
+                                <div class="mt-6 flex flex-wrap gap-2">
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">抽象艺术</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">大数据</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">模式识别</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">交互式装置</span>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                },
+                // 其他作品详情数据...
+            };
+            
+            // 打开模态框
+            viewDetailsButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const portfolioId = this.getAttribute('data-id');
+                    const portfolio = portfolioDetails[portfolioId];
+                    
+                    if (portfolio) {
+                        modalTitle.textContent = portfolio.title;
+                        modalContent.innerHTML = portfolio.content;
+                        portfolioModal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden'; // 防止背景滚动
+                    }
+                });
+            });
+            
+            // 关闭模态框
+            closeModal.addEventListener('click', function() {
+                portfolioModal.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // 恢复背景滚动
+            });
+            
+            // 点击模态框外部关闭
+            portfolioModal.addEventListener('click', function(event) {
+                if (event.target === portfolioModal) {
+                    portfolioModal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // 查看更多按钮
+            const loadMoreButtons = document.querySelectorAll('.load-more');
+            
+            loadMoreButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    alert(`加载更多${category}作品`);
+                    // 实际项目中这里会发送AJAX请求加载更多作品
+                });
+            });
+            
+            // 联系表单提交
+            const contactForm = document.getElementById('contact-form');
+            
+            contactForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                // 获取表单数据
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const subject = document.getElementById('subject').value;
+                const message = document.getElementById('message').value;
+                
+                // 简单验证
+                if (!name || !email || !subject || !message) {
+                    alert('请填写所有必填字段');
+                    return;
+                }
+                
+                // 模拟表单提交
+                alert('消息已发送，我们会尽快回复您！');
+                contactForm.reset();
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // AI推荐系统模拟
+            function simulateAIRecommendation() {
+                // 模拟用户浏览行为
+                const viewedItems = [];
+                
+                // 监听用户点击作品
+                document.querySelectorAll('.portfolio-card').forEach(card => {
+                    card.addEventListener('click', function() {
+                        const category = this.closest('section').id;
+                        viewedItems.push(category);
+                        
+                        // 简单的推荐逻辑
+                        if (viewedItems.length >= 3) {
+                            // 找出最常浏览的类别
+                            const categoryCounts = viewedItems.reduce((counts, category) => {
+                                counts[category] = (counts[category] || 0) + 1;
+                                return counts;
+                            }, {});
+                            
+                            let mostViewedCategory = '';
+                            let maxCount = 0;
+                            
+                            for (const category in categoryCounts) {
+                                if (categoryCounts[category] > maxCount) {
+                                    maxCount = categoryCounts[category];
+                                    mostViewedCategory = category;
+                                }
+                            }
+                            
+                            // 显示推荐提示
+                            const categoryNames = {
+                                'infographics': '信息图',
+                                'music-mv': '音乐MV',
+                                'videos': '视频',
+                                'websites': '网页'
+                            };
+                            
+                            setTimeout(() => {
+                                alert(`根据您的浏览习惯，我们推荐您查看更多${categoryNames[mostViewedCategory]}作品。`);
+                            }, 1000);
+                        }
+                    });
+                });
+            }
+            
+            // 启动AI推荐模拟
+            simulateAIRecommendation();
+        });
+    </script>
+
+
+</body></html>
